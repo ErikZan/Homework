@@ -5,7 +5,7 @@ class Empty:
         pass
     
 class PositionControl:
-    ''' A PID position control ler with friction compensation
+    ''' A PID position control ler with friction compensation GAAAAY
             u = kp*(q_ref-q) + kd*(dq_ref-dq) + ki*integral(q_ref-q) + u_friction
         where u_friction can be computed either with the sign function:
             u_friction = sign(dq)*tau_c
