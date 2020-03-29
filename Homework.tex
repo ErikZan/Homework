@@ -1,0 +1,66 @@
+\documentclass[onecolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath} % Advanced math typesetting
+\usepackage[utf8]{inputenc} % Unicode support (Umlauts etc.)
+\usepackage[english]{babel} % Change hyphenation rules
+\usepackage{hyperref} % Add a link to your document
+\usepackage{graphicx} % Add pictures to your document
+\usepackage{listings} % Source code formatting and highlighting
+\usepackage{bookmark}
+\usepackage{natbib}
+\usepackage{geometry}
+\usepackage{bbm}
+%\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage[document]{ragged2e}
+\usepackage{adjustbox}
+\usepackage{subcaption}
+% \pagestyle{fancy}
+% \fancyhf{}
+% \fancyhead[LE,RO]{Overleaf}
+% \fancyhead[RE,LO]{Guides and tutorials}
+% \fancyfoot[CE,CO]{\leftmark}
+% \fancyfoot[LE,RO]{\thepage}
+\graphicspath{ {Immagini/} }
+%C:\Users\erikz\OneDrive\Desktop\PaioPaio2\IMM-Sensors-Network\Latex\Immagini
+\geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+
+\title{Homework AORC}
+\author{
+Pasquale Romano 198573 
+
+Zanolli Erik 198852}
+\date{April 2020}
+
+
+
+
+
+\begin{document}
+
+\maketitle
+
+
+
+\section*{1}
+\justify
+The strategy that leads to the smallest tracking error is the $tanh(2*dq)$ method . The MSE value referred to various $Kp Kd$ are listed in Table below
+
+The reason is the fact that the $tanh(2*dq)$ can combine the property of continuity and a good approximation of the step function that characterize the model of Coulomb friction
+
+\section*{2}
+The strategy that leads to the highest tracking error is the $tanh(0.01*dq)$ method. The reason is probably that it approximate badly the fisical Coulomb model inducing error in the vicinity of $\dot{q}=0$
+
+\section*{3}
+the main problem is that the sign is a discontinous function so in the proximity of zero it have a infinite derivative. close to this points an small error in the retrive the position/velocity can lead to 
+instantaneous change in the torque value applied and generate oscillation and vibration.
+
+\section*{4}
+
+
+\end{document}

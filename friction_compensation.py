@@ -107,11 +107,11 @@ if __name__=='__main__':
     np.set_printoptions(precision=1, linewidth=200, suppress=True)
 
     dt = 1e-3               # controller time step
-    T = 2.5                 # simulation time
+    T = 2                 # simulation time
     N = int(T/dt)           # number of time steps
     motor_name = 'Maxon148877'    
-    kp = 1.0     # proportional gain
-    kd = 1.0        # derivative gain            
+    kp = 100.0     # proportional gain
+    kd = 100.0        # derivative gain            
     ki = 0.0        # integral gain
     q_b = 0.0       # initial motor angle
     q_a = 0.        # linear increase in motor angle per second
@@ -131,8 +131,10 @@ if __name__=='__main__':
     res_tanh_2 = run_simulation(N, dt, kp, kd, ki, motor_params, tanh_fric_comp=True, tanh_gain=2.0)
 
     plot_stuff(res_sign,  "sign(dq)")
+    plt.axis([0.9, 1.10, -100 ,100])
     plot_stuff(res_tanh_1,"tanh(0.01*dq)")
+    plt.axis([0.9, 1.10, -100 ,100])
     plot_stuff(res_tanh_2,"tanh(2*dq)")
-    
+    plt.axis([0.9, 1.10, -100 ,100])
     plt.show()
 
