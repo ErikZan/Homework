@@ -95,6 +95,9 @@ def plot_stuff(res, title):
     for i in range(len(ax)): ax[i].legend()
     plt.xlabel('Time [s]')
     
+def manage_cose(res, some, i ):
+    some[i] = 1e3*norm(res.q-res.q_ref)/N
+    return some
     
 if __name__=='__main__':
     import arc.utils.plot_utils as plut
@@ -115,26 +118,56 @@ if __name__=='__main__':
     ki = 0.0        # integral gain
     q_b = 0.0       # initial motor angle
     q_a = 0.        # linear increase in motor angle per second
-    q_w = 0.5 *0.5   # frequency of sinusoidal reference motor angle
+    ################################################
     q_A = 1.0       # amplitude of sinusoidal reference motor angle
     motor_params = get_motor_parameters(motor_name)
     
     # uncomment the following 2 lines if you wanna set Coulomb friction to zero
 #    params.tau_coulomb_gear = 0.0
 #    params.tau_coulomb = 0.0
+    NN=int(11)
+    step=0.5
     
-    print("Friction compensation with sign")
-    res_sign    = run_simulation(N, dt, kp, kd, ki, motor_params, tanh_fric_comp=False, tanh_gain=0.0)
-    print("Friction compensation with tanh(0.01*dq)")
-    res_tanh_1  = run_simulation(N, dt, kp, kd, ki, motor_params, tanh_fric_comp=True, tanh_gain=0.01)
-    print("Friction compensation with tanh(2*dq)")
-    res_tanh_2 = run_simulation(N, dt, kp, kd, ki, motor_params, tanh_fric_comp=True, tanh_gain=2.0)
-
-    plot_stuff(res_sign,  "sign(dq)")
-    #plt.axis([0, T, -20 ,20])
-    plot_stuff(res_tanh_1,"tanh(0.01*dq)")
-    #plt.axis([0, T, -20 ,20])
-    plot_stuff(res_tanh_2,"tanh(2*dq)")
-    #plt.axis([0, T, -20 ,20])
-    plt.show()
+    to_plot_sign = np.zeros(NN)
+    to_plot_tanh_1 = np.zeros(NN)
+    to_plot_tanh_2 = np.zeros(NN)
+    f = open( 'for_plot.txt', 'w' )
+    for q in range(NN):
+        q_w = step*q
+        print("\n Actual q_w = ", q_w , "\n")
+        
+        print("Friction compensation with sign")
+        res_sign = run_simulation(N, dt, kp, kd, ki, motor_params, tanh_fric_comp=False, tanh_gain=0.0)
+        print("Friction compensation with tanh(0.01*dq)")
+        res_tanh_1  = run_simulation(N, dt, kp, kd, ki, motor_params, tanh_fric_comp=True, tanh_gain=0.01)
+        print("Friction compensation with tanh(2*dq)")
+        res_tanh_2 = run_simulation(N, dt, kp, kd, ki, motor_params, tanh_fric_comp=True, tanh_gain=2.0)
+        
+        manage_cose(res_sign,to_plot_sign,q)
+        manage_cose(res_sign,to_plot_tanh_1,q)
+        manage_cose(res_sign,to_plot_tanh_2,q)
+       # to_plot_sign[q] = res_sign.q
+       # to_plot_tanh_1[q] = res_tanh_1
+       # to_plot_tanh_2[q] = res_tanh_2
+        
+        f.write( repr(to_plot_sign[q])+"\n" )
+    f.close()
+    S = zip(to_plot_sign,to_plot_tanh_1,to_plot_tanh_2)
+    import csv
+    with open('plot.csv','w') as f:
+        writer = csv.writer(f,delimiter='\t')
+        writer.writerows(zip(to_plot_sign,to_plot_tanh_1,to_plot_tanh_2))
+    #frequency= np.arange(0.0,step*NN,step)
+    #frequency=frequency[:NN]
+    #to_plot_sign = to_plot_sign[:NN]
+    #plt(to_plot_sign)
+    #plt.show()
+      #plot_stuff(res_sign,  "sign(dq)")
+      #plt.axis([0, T, -20 ,20])
+      #plot_stuff(res_tanh_1,"tanh(0.01*dq)")
+      #plt.axis([0, T, -20 ,20])
+      #plot_stuff(res_tanh_2,"tanh(2*dq)")
+      #plt.axis([0, T, -20 ,20])
+      #plt.show()
+      
 
