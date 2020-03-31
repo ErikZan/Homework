@@ -108,7 +108,7 @@ if __name__=='__main__':
     from numpy.linalg import norm
     
     np.set_printoptions(precision=1, linewidth=200, suppress=True)
-
+    
     dt = 1e-3               # controller time step
     T = 2                 # simulation time
     N = int(T/dt)           # number of time steps
@@ -121,12 +121,13 @@ if __name__=='__main__':
     ################################################
     q_A = 1.0       # amplitude of sinusoidal reference motor angle
     motor_params = get_motor_parameters(motor_name)
+    time = np.zeros(N)
     
     # uncomment the following 2 lines if you wanna set Coulomb friction to zero
 #    params.tau_coulomb_gear = 0.0
 #    params.tau_coulomb = 0.0
-    NN=int(11)
-    step=0.5
+    NN=int(100)
+    step=0.01
     
     to_plot_sign = np.zeros(NN)
     to_plot_tanh_1 = np.zeros(NN)
@@ -144,20 +145,21 @@ if __name__=='__main__':
         res_tanh_2 = run_simulation(N, dt, kp, kd, ki, motor_params, tanh_fric_comp=True, tanh_gain=2.0)
         
         manage_cose(res_sign,to_plot_sign,q)
-        manage_cose(res_sign,to_plot_tanh_1,q)
-        manage_cose(res_sign,to_plot_tanh_2,q)
+        manage_cose(res_tanh_1,to_plot_tanh_1,q)
+        manage_cose(res_tanh_2,to_plot_tanh_2,q)
+        
        # to_plot_sign[q] = res_sign.q
        # to_plot_tanh_1[q] = res_tanh_1
        # to_plot_tanh_2[q] = res_tanh_2
         
         f.write( repr(to_plot_sign[q])+"\n" )
     f.close()
-    S = zip(to_plot_sign,to_plot_tanh_1,to_plot_tanh_2)
+    frequency= np.linspace(0.0,step*float(NN),NN)
+    S = zip(frequency,to_plot_sign,to_plot_tanh_1,to_plot_tanh_2)
     import csv
     with open('plot.csv','w') as f:
         writer = csv.writer(f,delimiter='\t')
-        writer.writerows(zip(to_plot_sign,to_plot_tanh_1,to_plot_tanh_2))
-    #frequency= np.arange(0.0,step*NN,step)
+        writer.writerows(zip(frequency,to_plot_sign,to_plot_tanh_1,to_plot_tanh_2))
     #frequency=frequency[:NN]
     #to_plot_sign = to_plot_sign[:NN]
     #plt(to_plot_sign)
